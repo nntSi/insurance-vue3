@@ -1,0 +1,70 @@
+*{
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  font-family: 'Noto Sans Thai', sans-serif;
+}
+h1, h2, h3, h4, h5 {
+  color: var(--text-color);
+}
+a{
+  font-size: 14px;
+  color: var(--text-color);
+}
+:root {
+  background-color: rgb(234, 236, 237);
+  --primary-color:  rgb(71, 99, 129);
+  --secondary-color: rgb(96, 123, 152);
+  --text-color: #4E6B78;
+  --side-menu-color: #a9b3b8;
+  --text-color-white: #fff
+}
+body {
+  background-color: rgb(234, 236, 237);
+  height: 100vh;
+}
+.form-control:focus{
+  outline: none;
+  box-shadow: none;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+.btn-darkblue{
+  border-radius: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background-color: var(--secondary-color);
+  color: #fff;
+}
+.btn-darkblue:hover {
+  background-color: rgb(71, 99, 129);
+  color: #fff;
+}
+.btn-gray{
+  border-radius: 20px;
+  padding-left: 81px;
+  padding-right: 81px;
+  background-color: var(--side-menu-color);
+  color: #fff;
+}
+.btn-gray:hover {
+  background-color: #717e83;
+  color: #fff;
+}
+.sign-up{
+  width: 35%;
+}
+.fm-square{
+  border-radius: 3px !important;
+}
+label b{
+  font-size: 14px;
+}
+.w-35{
+  width: 35%;
+}
