@@ -1,14 +1,14 @@
 <template>
   <div class="container-fluid d-flex flex-column justify-content-center align-items-center" id="login_view" name="login_view">
-    <!-- <img src="../assets/logo.png" class="mb-4"> -->
     <div class="border bg-light rounded shadow-sm p-5" v-if="show_login">
-      <h1 class="mb-0">SIGN IN</h1>
-      <p class="mb-3">ความรักของ <b>"ฉัน"</b> นั้นให้ <b>"เธอ"</b></p>
-      <div class="input-group input-group-sm mb-3 border">
+      <!-- <img src="../assets/logo.png" class="mb-4"> -->
+      <h1 class="mb-0 text-center">SURVEY HUB</h1>
+      <p class="mb-4 text-center">เคลมของ <b>"ฉัน"</b> นั้นไวกว่า <b>"แสง"</b></p>
+      <div class="input-group input-group-sm mb-3 border w-100">
         <input type="text" v-model="login_state.username" class="form-control border-0" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
         <span class="input-group-text border-0" id="basic-addon1"><i class="bi bi-person"></i></span>
       </div>
-      <div class="input-group input-group-sm mb-3 border">
+      <div class="input-group input-group-sm mb-3 border w-100">
         <input type="password" v-model="login_state.password" class="form-control border-0" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1">
         <span class="input-group-text border-0" id="basic-addon1"><i class="bi bi-key"></i></span>
       </div>
@@ -23,7 +23,8 @@
         </button>
       </div>
       <div class="w-100 d-flex justify-content-center">
-        <a class="text-decoration-none" type="button" @click="toggleShow">ลงทะเบียน</a>
+        <!-- not use @click="toggleShow" for regis -->
+        <a class="text-decoration-none" type="button" >ลงทะเบียน</a>
       </div>
     </div>
     <!-- sign up card -->
@@ -111,11 +112,11 @@ const Login = () => {
   wait_load_state.value = !wait_load_state.value
   setTimeout(function() {
     store.dispatch({
-    type : 'auth/login',
-    login_state
+      type : 'auth/login',
+      login_state
     });
     wait_load_state.value = false
-  }, 3000);
+  }, 1000);
 };
 
 /* Register */
@@ -166,7 +167,7 @@ const signup = () => {
     height: 100vh;
   }
   .container-fluid img{
-    width: 200px;
+    width: 250px;
   }
   .input-group{
     width: 220px;
@@ -183,6 +184,9 @@ const signup = () => {
   }
   p{
     font-size: 14px;
+  }
+  h1{
+    font-weight: 700;
   }
 /*   h1{
     font-size: 55px;
