@@ -1,7 +1,5 @@
 import router from "@/router";
 import axios from "axios";
-import { application, response } from "express";
-import { server } from "@/services/constants";
 import api from "@/services/api"
 
 export const auth = {

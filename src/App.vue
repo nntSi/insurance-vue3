@@ -23,7 +23,7 @@ import { useStore } from "vuex";
 import SideBarVue from "./components/SideBar.vue";
 import HeaderComponentVue from "./components/HeaderComponent.vue";
 
-const store = useStore()
+const store = useStore();
 const islogin = reactive({loginState: store.getters['auth/myAccount']});
 
 onMounted(() => {

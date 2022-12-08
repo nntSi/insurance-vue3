@@ -91,9 +91,11 @@
 </template>
 
 <script setup lang="ts">
+import router from "@/router";
+import { apiUrl } from "@/services/constants";
 import axios from "axios";
 import { response } from "express";
-import { reactive, ref } from "vue";
+import { reactive, ref, onMounted } from "vue";
 import { useStore } from "vuex";
 
 const store = useStore()
@@ -138,7 +140,7 @@ const account = reactive({
 });
 const signup = () => {
   console.log(account);
-  axios.post("http://localhost:3000/api/svh/users/register", account)
+  axios.post(apiUrl + "/users/register", account)
   .then(response => {
     console.log(response.data);
     state_regis.value = response.data.message;
@@ -160,6 +162,12 @@ const signup = () => {
     }, 1000);
   });
 }
+onMounted(() => {
+  if(state.loginState.status == true){
+    router.push('/home')
+  }
+});
+
 </script>
 
 <style scoped>

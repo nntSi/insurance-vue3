@@ -7,7 +7,7 @@
         </span>
       </div>
       <p class="mb-0 ms-3"><b>{{state.loginState.title}}</b> {{state.loginState.firstname}} {{state.loginState.lastname}} <b>ตำแหน่ง</b> <span class="badge bg-warning text-dark">{{state.loginState.position}}</span></p>
-      <a type="button" class="ms-auto me-3 text-decoration-none fw-bold">ออกจากระบบ</a>
+      <a type="button" class="ms-auto me-3 text-decoration-none fw-bold" @click="logout">ออกจากระบบ</a>
     </div>
   </div>
 </template>
@@ -25,11 +25,19 @@ const state = reactive({loginState: store.getters['auth/myAccount']});
 /* onMounted(() => {
   
 }); */
+const logout = () => {
+  store.dispatch({
+    type : 'auth/logout',
+  });
+}
 
 </script>
 
 <style scoped>
 a:hover{
  color: #E05538;
+}
+a{
+  font-size: 16px;
 }
 </style>

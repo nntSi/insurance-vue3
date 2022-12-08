@@ -16,10 +16,10 @@
         <div class="sidebar-menu w-100">
           <ul class="menu-nav">
             <li>
-              <router-link to="/home" class="w-100"><i class="bi bi-card-checklist me-3 fs-5"></i>ออกเลขการทำเคลม</router-link>
+              <router-link to="/home" :class="[($route.path == '/home') ? 'bg-darkblue' : '']"><i class="bi bi-card-checklist me-3 fs-5"></i>ออกเลขการทำเคลม</router-link>
             </li>
             <li>
-              <router-link to="/home/about" class="w-100">
+              <router-link to="/home/status" :class="[($route.path == '/home/status') ? 'bg-darkblue' : '']">
                 <i class="bi bi-cup-hot me-3 fs-5"></i>
                 ติดตามสถานะ
                 <span class="badge bg-danger ms-3">0</span>
@@ -29,12 +29,30 @@
         </div>
       </div>
       <!-- bottom -->
-      <div class="sidebar-bottom w-100 ">
-        <a type="button" @click="logout"><i class="bi bi-power me-2 fw-bold"></i>ออกจากระบบ</a>
+      <div class="sidebar-bottom w-100">
+        <a type="button" class="py-2" @click="logout"><i class="bi bi-power me-2 fw-bold"></i>ออกจากระบบ</a>
+        <!-- <p>{{$route.path}}</p> -->
       </div>
     </div>
   </aside>
 </template>
+
+<script setup lang="ts">
+
+import { onMounted, reactive, ref } from "vue";
+import { useRoute } from "vue-router";
+import { useStore } from "vuex";
+
+const store = useStore()
+
+const logout = () => {
+  store.dispatch({
+    type : 'auth/logout',
+  });
+}
+
+/* const route_name = ref(route.name) */
+</script>
 
 <style scoped>
   h1{
@@ -55,8 +73,8 @@
   .menu-nav li a{
     border-radius: 5px;
     display: block;
-    padding-top: 6px;
-    padding-bottom: 6px;
+    padding-top: 8px;
+    padding-bottom: 8px;
     padding-left: 10px;
     text-decoration: none;
     font-size: 16px;
@@ -89,20 +107,9 @@
     padding-left: 45px;
     color: #E05538;
   }
+  .bg-darkblue{
+    background-color: #45575d;
+    color: #fff;
+  }
 </style>
 
-<script setup lang="ts">
-
-import { onMounted, reactive, ref } from "vue";
-import { useStore } from "vuex";
-
-const store = useStore()
-
-const logout = () => {
-  store.dispatch({
-    type : 'auth/logout',
-  });
-}
-
-
-</script>

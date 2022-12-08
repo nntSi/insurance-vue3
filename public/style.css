@@ -126,3 +126,14 @@ label b{
   margin-top: 12px;
   margin-left: -4px;
 }
+.datepicker input{
+  font-size: 16px;
+  font-family: 'Noto Sans Thai', sans-serif;
+}
+.bg-darkblue.a{
+  background-color: #45575d;
+  color: #fff;
+}
+.text-primary-nt{
+  color: var(--text-color);
+}
