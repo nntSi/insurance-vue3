@@ -14,6 +14,8 @@ export const claim = {
     
   },
   actions: {
+    /* setCode({commit, payload}:any){
 
+    } */
   }
 } 

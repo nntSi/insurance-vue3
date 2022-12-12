@@ -15,7 +15,7 @@ a{
   color: var(--text-color);
 }
 :root {
-  background-color: rgb(251, 251, 251);
+  background-color: rgb(234, 236, 237);
   --primary-color:  rgb(71, 99, 129);
   --secondary-color: rgb(96, 123, 152);
   --text-color: #4E6B78;

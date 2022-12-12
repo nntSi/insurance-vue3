@@ -10,8 +10,12 @@
   "dependencies": {
     "@vuepic/vue-datepicker": "^3.5.3",
     "axios": "^1.2.0",
+    "chart.js": "^4.0.1",
     "core-js": "^3.8.3",
+    "jspdf": "^2.5.1",
+    "pdfmake": "^0.2.6",
     "vue": "^3.2.13",
+    "vue-chartjs": "^5.0.1",
     "vue-class-component": "^8.0.0-0",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0"

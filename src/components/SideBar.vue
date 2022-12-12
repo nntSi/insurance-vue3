@@ -1,5 +1,5 @@
 <template>
-  <aside class="sidebar shadow-sm">
+  <aside class="sidebar shadow">
     <div class="main d-flex flex-column justify-content-between h-100">
       <!-- top -->
       <div class="sidebar-top w-100">
@@ -15,6 +15,12 @@
         </div>
         <div class="sidebar-menu w-100">
           <ul class="menu-nav">
+            <li>
+              <router-link to="/dashboard" :class="[($route.path == '/dashboard') ? 'bg-darkblue' : '']">
+                <i class="bi bi-bar-chart-line me-3 fs-5"></i>
+                Dashboard
+              </router-link>
+            </li>
             <li>
               <router-link to="/home" :class="[($route.path == '/home') ? 'bg-darkblue' : '']"><i class="bi bi-card-checklist me-3 fs-5"></i>ออกเลขการทำเคลม</router-link>
             </li>

@@ -2,9 +2,9 @@
   <div id="homeview">
     <div>
       <form class="" @submit.prevent="createClaim">
-        <div class="card-light bg-light shadow-sm mb-3">
+        <div class="card-light bg-light shadow mb-3 p-5">
           <div class="ps-3 pe-3">
-            <h2 class="mb-3 text-center border-bottom pb-2">ออกเลขการทำเคลม</h2>
+            <h1 class="mb-4 text-center mt-4 pb-5">ออกเลขการทำเคลม</h1>
             <div class="width">
               <div class="row mb-1">
                 <div class="col-md-6 mb-sm-2">
@@ -31,6 +31,7 @@
                   <select class="form-select" v-model="claim_for_send.type" @change="showDryForm" required>
                     <option selected>เคลมสด</option>
                     <option>เคลมแห้ง</option>
+                    <option>ติดตามผลคดี</option>
                   </select>
                 </div>
                 <div class="col-md-6 mb-sm-2">
@@ -60,8 +61,12 @@
                   <input type="text" class="form-control" placeholder="ประกันชนท้าย..." v-model="claim_for_send.accident">
                 </div>
                 <div class="col-md-6 mb-sm-2">
+                  <!-- {{claim_for_send.employee}} -->
                   <label>พนักงานรับแจ้ง</label>
-                  <input type="text" class="form-control" placeholder="ชื่อพนักงาน" v-model="claim_for_send.employee" required>
+                  <select class="form-select" v-model="claim_for_send.employee" required>
+                    <option value="">พนักงาน</option>
+                    <option v-for="(item, index) in data_inintail.employee" :key="index">{{item['name']}}</option>
+                  </select>
                 </div>
               </div>
               <div class="row">
@@ -81,54 +86,88 @@
           </div>
         </div>
         <div class="d-flex">
-          <button class="btn btn-darkblue w-25 ms-auto me-3 shadow-sm rounded" type="submit" :data-bs-toggle="bs" @mouseover="btnSubmitState" data-bs-target="#resultCreateClaim">บันทึกและออกเลขเคลม</button>
-          <button type="button" class="btn btn-gray w-25 rounded shadow-sm" >ยกเลิก</button>
+          <button class="btn btn-darkblue w-25 ms-auto me-3 shadow rounded" type="submit" :data-bs-toggle="bs" @mouseover="btnSubmitState" data-bs-target="#resultCreateClaim">บันทึกและออกเลขเคลม</button>
+          <button type="button" class="btn btn-gray w-25 rounded shadow" >ยกเลิก</button>
         </div>
       </form>
     </div>
-    {{claim_for_send.time}}
-    <div class="modal fade" id="resultCreateClaim" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">เลขเคลมที่ {{data_claim_modal.data_res.svh_code}}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="border p-2 mb-2 rounded">
-              <h5 class="border-bottom pb-2">กลุ่ม Survey Hub อบ.</h5>
-              {{data_claim_modal.data_res.date}} <br>
-              <!-- <b>วันที่รับแจ้ง :</b> 5 ธันวาคม 2565 -->
-              <b>รับแจ้งอุบัติเหตุ :</b> {{data_claim_modal.data_res.company}} <br>
-              <b>ประเภท :</b> {{data_claim_modal.data_res.type}} {{data_claim_modal.data_res.date_dry}} {{data_claim_modal.data_res.time_dry}}<br>
-              <b>จ่ายงานโดย :</b> {{data_claim_modal.data_res.source_employee}} <br>
-              <b>สถานที่ :</b> {{data_claim_modal.data_res.location}} <br>
-              <b>ลักษณะ อบ. :</b> {{data_claim_modal.data_res.accident}} <br>
-              <b>พนักงานรับแจ้ง :</b> {{data_claim_modal.data_res.employee}} <br>
-              <b>เวลารับเรื่อง :</b> {{data_claim_modal.data_res.time}} <br>
-              <b>เจ้าหน้าที่ตรวจสอบอุบัติเหตุ :</b> {{data_claim_modal.data_res.inspector}} {{data_claim_modal.data_res.inspector_mobile}} <br>
-              <b>เลขเซอร์เวย์ :</b> {{data_claim_modal.data_res.svh_code}}
+    <!-- {{claim_for_send.time}} -->
+    <form action="" @submit.prevent="updateAndMakePdf">
+      <div class="modal fade" id="resultCreateClaim" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">เลขเคลมที่ <b class="text-success">{{data_claim_modal.data_res.svh_code}}</b></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="border p-2 rounded">
-              <h5 class="border-bottom pb-2">กลุ่มประกัน</h5>
-              {{data_claim_modal.data_res.date}} <br>
-              <!-- <b>วันที่รับแจ้ง :</b> 5 ธันวาคม 2565 -->
-              <b>บริษัทประกันภัย :</b> {{data_claim_modal.data_res.company}} <br>
-              <b>วันที่รับแจ้ง :</b> {{data_claim_modal.data_res.date}} <br>
-              <b>ลักษณะ :</b> {{data_claim_modal.data_res.type}} {{data_claim_modal.data_res.date_dry}} {{data_claim_modal.data_res.time_dry}} <br>
-              <b>สถานที่ :</b> {{data_claim_modal.data_res.location}} <br>
-              <b>เจ้าหน้าที่ตรวจสอบอุบัติเหตุ :</b> {{data_claim_modal.data_res.inspector}} {{data_claim_modal.data_res.inspector_mobile}} <br>
-              <b>เลขเซอร์เวย์ :</b> {{data_claim_modal.data_res.svh_code}} <br>
-              <b>{{data_claim_modal.data_res.employee}} ;</b> รับแจ้งฯ
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="border p-2 mb-2 rounded">
+                    <h5 class="border-bottom pb-2">กลุ่ม Survey Hub อบ.</h5>
+                    {{data_claim_modal.data_res.date}} <br>
+                    <!-- <b>วันที่รับแจ้ง :</b> 5 ธันวาคม 2565 -->
+                    <b>รับแจ้งอุบัติเหตุ :</b> {{data_claim_modal.data_res.company}} <br>
+                    <b>ประเภท :</b> {{data_claim_modal.data_res.type}} {{data_claim_modal.data_res.date_dry}} {{data_claim_modal.data_res.time_dry}}<br>
+                    <b>จ่ายงานโดย :</b> {{data_claim_modal.data_res.source_employee}} <br>
+                    <b>สถานที่ :</b> {{data_claim_modal.data_res.location}} <br>
+                    <b>ลักษณะ อบ. :</b> {{data_claim_modal.data_res.accident}} <br>
+                    <b>พนักงานรับแจ้ง :</b> {{data_claim_modal.data_res.employee}} <br>
+                    <b>เวลารับเรื่อง :</b> {{data_claim_modal.data_res.time}} <br>
+                    <b>เจ้าหน้าที่ตรวจสอบอุบัติเหตุ :</b> {{data_claim_modal.data_res.inspector}} {{data_claim_modal.data_res.inspector_mobile}} <br>
+                    <b>เลขเซอร์เวย์ :</b> {{data_claim_modal.data_res.svh_code}}
+                  </div>
+                  <div class="border p-2 rounded">
+                    <h5 class="border-bottom pb-2">กลุ่มประกัน</h5>
+                    {{data_claim_modal.data_res.date}} <br>
+                    <!-- <b>วันที่รับแจ้ง :</b> 5 ธันวาคม 2565 -->
+                    <b>บริษัทประกันภัย :</b> {{data_claim_modal.data_res.company}} <br>
+                    <b>วันที่รับแจ้ง :</b> {{data_claim_modal.data_res.date}} <br>
+                    <b>ลักษณะ :</b> {{data_claim_modal.data_res.type}} {{data_claim_modal.data_res.date_dry}} {{data_claim_modal.data_res.time_dry}} <br>
+                    <b>สถานที่ :</b> {{data_claim_modal.data_res.location}} <br>
+                    <b>เจ้าหน้าที่ตรวจสอบอุบัติเหตุ :</b> {{data_claim_modal.data_res.inspector}} {{data_claim_modal.data_res.inspector_mobile}} <br>
+                    <b>เลขเซอร์เวย์ :</b> {{data_claim_modal.data_res.svh_code}} <br>
+                    <b>{{data_claim_modal.data_res.employee}} ;</b> รับแจ้งฯ
+                  </div>
+                </div>
+                <div class="col-md-6 ps-0">
+                  <div class="p-3 rounded border h-100">
+                    <h4 class="border-bottom pb-1">ข้อมูลเพิ่มเติม</h4>
+                    <label>จังหวัด</label>
+                    <select class="form-select mt-0 mb-3" aria-label="Default select example" v-model="claim_for_update.province" @change="showDistricByPRID(claim_for_update.province)">
+                      <option value="">เลือกจังหวัด</option>
+                      <option v-for="(item, index) in data_inintail.province" :key="index" :value="item['id']">{{item['name']}}</option>
+                    </select>
+                    <label>อำเภอ</label>
+                    <select class="form-select mt-0  mb-3" aria-label="Default select example" v-model="claim_for_update.district">
+                      <option value="">อำเภอ</option>
+                      <option v-for="(item, index) in data_inintail.district" :key="index" :value="item['id']">{{item['name']}}</option>
+                    </select>
+                    <h4 class="border-bottom pb-1 mt-4">เกี่ยวกับผู้เอาประกัน</h4>
+                    <label>ชื่อผู้เอาประกัน</label>
+                    <input type="text" class="form-control  mb-3" v-model="claim_for_update.customer_claim_name" placeholder="คุณ...">
+                    <label>เบอร์ติดต่อผู้เอาประกัน หรือผู้ขับขี่</label>
+                    <input type="text" class="form-control mb-3" v-model="claim_for_update.customer_claim_mobile" placeholder="09xx">
+                    <!-- license_plate -->
+                    <label>ทะเบียนรถ</label>
+                    <input type="text" class="form-control mb-3" v-model="claim_for_update.license_plate" placeholder="กกขขxx">
+                    <label>ยี่ห้อรถ</label>
+                    <input type="text" class="form-control" v-model="claim_for_update.brand_car" placeholder="Honda cvic">
+                    <!-- {{claim_for_update}} -->
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-            <!-- <button type="button" class="btn btn-primary">Understood</button> -->
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-warning" ><i class="bi bi-file-earmark-pdf-fill me-2"></i>บันทึกและพิมพ์ไฟล์</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="clearModal">ปิด</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </form>
+    <!-- pr ds unit -->
+    <!-- <button @click="downloadClaimFile">GetPDF</button> -->
   </div>
 </template>
 
@@ -138,6 +177,9 @@ import { onMounted, reactive, ref, computed } from "vue";
 import { useStore } from "vuex";
 import DatePicker from '@vuepic/vue-datepicker';
 import axios from "axios";
+import jsPDF from 'jspdf';
+import { sarabun, sarabunbold } from '../fonts/fonts'
+import { response } from "express";
 
 const store = useStore();
 const state = reactive({ loginState: store.getters["auth/myAccount"] });
@@ -145,13 +187,20 @@ const state = reactive({ loginState: store.getters["auth/myAccount"] });
 // setting when page is created
 const data_inintail = reactive({
   inspector:{},
-  company: {}
-})
+  company: {},
+  employee: {},
+  province: {},
+  district: {}
+});
 const getPageData = async () => {
   const data_onpage = await axios(apiUrl +'/claim/page');
   /* console.log(await data_onpage.data); */
   data_inintail.inspector = await data_onpage.data.inspector;
   data_inintail.company = await data_onpage.data.company;
+  data_inintail.employee = await data_onpage.data.employee;
+  data_inintail.province = await data_onpage.data.province;
+  data_inintail.district = await data_onpage.data.district;
+  /* console.log(data_onpage.data); */
 };
 onMounted(() => {
   store.dispatch({
@@ -226,7 +275,13 @@ const claim_for_send = reactive({
   token: localStorage.getItem(server.TOKEN_KEY),
   date_dry: "",
   time_dry: "",
-  sts: 1
+  sts: 1,
+  province: "",
+  district: "",
+  brand_car: "",
+  customer_claim_mobile: "",
+  customer_claim_name: "",
+  license_plate: ""
 });
 // reset form
 const resetClaimForm = () => {
@@ -245,9 +300,9 @@ const resetClaimForm = () => {
 const getMobile = async (inspector_id:string) => {
   const inspector_data = await axios( apiUrl + '/inspector/getbyid/' + inspector_id)
   .then(response => {
-    console.log(response.data.inspector[0].mobile)
+    console.log(response.data.inspector[0])
     claim_for_send.inspector = response.data.inspector[0].title + response.data.inspector[0].firstname + ' ' + response.data.inspector[0].lastname;
-    claim_for_send.inspector_mobile = response.data.inspector[0].mobile
+    claim_for_send.inspector_mobile = response.data.inspector[0].mobile;
   });
   /* for (let i in inspector_data.data.inspector){
     if(i == inspector_id){
@@ -262,7 +317,7 @@ const getMobile = async (inspector_id:string) => {
 };
 
 const showDryForm = async () => {
-  if(await claim_for_send.type == 'เคลมแห้ง'){
+  if(await claim_for_send.type == 'เคลมแห้ง' || await claim_for_send.type == 'ติดตามผลคดี'){
     isDry.value = true;
     return;
   }
@@ -270,13 +325,13 @@ const showDryForm = async () => {
 };
 
 // create data
-const createClaim = () => {
+const createClaim = async () => {
   if(claim_for_send.company == "" || claim_for_send.date == "" || claim_for_send.type == "" || claim_for_send.location == "" ||
     claim_for_send.employee == "" || claim_for_send.inspector == "" || claim_for_send.inspector_mobile == ""  ){
       /* display.value = 'none'; */
     return alert("กรุณากรอกข้อมูลให้ครบท้วน");
   }
-  axios.post(apiUrl + "/claim/create", claim_for_send)
+  await axios.post(apiUrl + "/claim/create", claim_for_send)
   .then(response => {
     if (response.data.status == false){
       alert(response.data.message);
@@ -285,8 +340,8 @@ const createClaim = () => {
     // operation date
     const month_th = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"]
     const dateArray = response.data.body[0].date.split("-");
-    /* console.log(`วันที่ ${parseInt(dateArray[2])} ${month_th[parseInt(dateArray[1]) - 1]} ${dateArray[0]}`); */
-
+    /* console.log(`วันที่ ${parseInt(dateArray[2])} ${month_th[parseInt(dateArray[1]) - 1]} ${dateArray}`); */
+    console.log(response.data.body[0]);
     data_claim_modal.data_res.date = `วันที่ ${parseInt(dateArray[2])} ${month_th[parseInt(dateArray[1]) - 1]} ${dateArray[0]}`
     data_claim_modal.data_res.company = response.data.body[0].company
     data_claim_modal.data_res.type = response.data.body[0].type
@@ -318,7 +373,8 @@ const data_claim_modal = reactive({data_res:{
   inspector_mobile: "",
   svh_code: "",
   date_dry: "",
-  time_dry: ""
+  time_dry: "",
+  brand_car: ""
 }});
 
 const bs = ref("");
@@ -330,6 +386,142 @@ const btnSubmitState = () => {
   }else{
     bs.value = "modal"
   }
+};
+
+// claim update for make pdf
+const claim_for_update = reactive({
+  province: 0,
+  district: 0,
+  brand_car: "",
+  customer_claim_mobile: "",
+  customer_claim_name: "",
+  license_plate: ""
+})
+const showDistricByPRID = (provinceID:number) => {
+ console.log(provinceID);
+ axios(apiUrl + '/claim/getdistrict/' + provinceID).then( response => {
+  /* console.log(response.data.body); */
+  data_inintail.district = response.data.body;
+ });
+};
+
+const updateAndMakePdf = () => {
+  if(claim_for_update.province == 0 || claim_for_update.district == 0 || claim_for_update.customer_claim_mobile == "" || claim_for_update.customer_claim_name == "" || claim_for_update.license_plate == ""){
+    return alert("กรอกข้อมูลไม่ครบ");
+  }
+  axios.patch(apiUrl + '/claim/updateforpdf/' + data_claim_modal.data_res.svh_code, claim_for_update).then(response => {
+    if(response.data.status == true){
+      downloadClaimFile(data_claim_modal.data_res.svh_code);
+      return;
+    }
+  });
+};
+
+// make pdf
+const downloadClaimFile = async (svhcode:string) => {
+
+  var pdf = new jsPDF();
+  let width = pdf.internal.pageSize.getWidth();
+  const fontbold = () => {
+    pdf.addFileToVFS("THSarabunBold.ttf", sarabunbold);
+    pdf.addFont('THSarabunBold.ttf', 'sarabunBold', 'normal');
+    pdf.setFont('sarabunBold');
+  };
+  const fontnormal = () => {
+    pdf.addFileToVFS("THSarabun.ttf", sarabun);
+    pdf.addFont('THSarabun.ttf', 'sarabun', 'normal');
+    pdf.setFont('sarabun');
+  }
+  // readata
+  await axios(apiUrl + '/claim/readdata/' + svhcode).then(response => {
+    const month_th = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+    console.log(response.data);
+    const dateArray = response.data.body.date.split("-");
+    let svh_code = `เลขเคลม : ${response.data.body['svh_code']}`
+    let date = `วันที่ ${parseInt(dateArray[2])} ${month_th[parseInt(dateArray[1]) - 1]} ${dateArray[0]} เวลารับแจ้ง : ${response.data.body.time}`;
+    /* let time = `เวลารับแจ้ง : ${response.data.body['time']}`;
+    let location = `${response.data.body['location']}`; */
+    /* console.log(response.data); */
+    // head code
+    let padding = 25
+    fontbold();
+    pdf.setFontSize(padding);
+    pdf.text(svh_code, width/2, padding, {align:'center'});
+    // content
+    fontnormal();
+    // date
+    pdf.setFontSize(16);
+    pdf.text(date, 210-padding, 42, {align:'right'});
+    // employee
+    fontbold();
+    pdf.text('พนักงานรับแจ้ง : ', padding, 42);
+    fontnormal();
+    pdf.text(response.data.body['employee'], 53, 42);
+    // inspector
+    fontbold();
+    pdf.text('เจ้าหน้าที่ตรวจสอบอุบัติเหตุ : ', padding, 50);
+    fontnormal();
+    pdf.text(response.data.body['Inspector'] + ' ' +  response.data.body['inspector_mobile'], 72, 50);
+    // claim
+    // company
+    fontbold();
+    pdf.text('บริษัทประกันภัย : ', padding, 58);
+    fontnormal();
+    pdf.text(response.data.body['company'], 54, 58);
+    // type
+    fontbold();
+    pdf.text('ประเภท : ', padding, 66);
+    fontnormal();
+    pdf.text(response.data.body['type'] + ' ' + response.data.body['date_dry'] + ' ' + response.data.body['time_dry'], 41, 66);
+    // location
+    fontbold();
+    pdf.text('สถานที่เกิดเหตุ : ', padding, 74);
+    fontnormal();
+    pdf.text(response.data.body['location'], 53, 74);
+    // provicne distric
+    fontbold();
+    pdf.text('อำเภอ : ', padding, 82);
+    fontnormal();
+    pdf.text(response.data.district['name'], 39, 82);
+    fontbold();
+    pdf.text('จังหวัด : ', 70, 82);
+    fontnormal();
+    pdf.text(response.data.body['name'], 86, 82);
+    // source employee
+    fontbold();
+    pdf.text('จ่ายงานโดย : ', padding, 90);
+    fontnormal();
+    pdf.text(response.data.body['source_employee'], 50, 90);
+    // cust
+    fontbold();
+    pdf.text('ชื่อผู้เอาประกัน : ', padding, 98);
+    fontnormal();
+    pdf.text(response.data.body['customer_claim_name'], 52, 98);
+    fontbold();
+    pdf.text('เบอร์ติดผู้เอาประกัน หรือผู้ขับขี่ : ', padding, 106);
+    fontnormal();
+    pdf.text(response.data.body['customer_claim_mobile'], 77, 106);
+    fontbold();
+    pdf.text('ทะเบียนรถ : ', padding, 114);
+    fontnormal();
+    pdf.text(response.data.body['license_plate'], 46, 114);
+    fontbold();
+    pdf.text('ยี่ห้อรถ : ', padding, 122);
+    fontnormal();
+    pdf.text(response.data.body['brand_car'], 41, 122);
+    
+    // export
+    pdf.save('hello.pdf');
+  });
+};
+
+const clearModal = () => {
+  claim_for_update.province = 0,
+  claim_for_update.district = 0,
+  claim_for_update.brand_car = "",
+  claim_for_update.customer_claim_mobile = "",
+  claim_for_update.customer_claim_name = "",
+  claim_for_update.license_plate = ""
 };
 
 </script>
@@ -346,7 +538,7 @@ label {
 }
 
 ::placeholder{
-  font-size: 14px;
+  font-size: 16px;
   color: rgb(211, 211, 211);
 }
 
