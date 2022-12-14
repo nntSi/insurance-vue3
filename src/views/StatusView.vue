@@ -28,7 +28,7 @@
             <td>{{item['date']}}</td>
             <td>{{item['time']}}</td>
             <td class="p-0 text-center" style="width: 13%;">
-              <a type="button" class="me-2 text-decoration-none py-1 px-2 text-dark fw-bold text-center mt-1 bg-warning rounded shadow-sm" data-bs-toggle="modal" data-bs-target="#dataClaim">
+              <a type="button" class="me-2 text-decoration-none py-1 px-2 text-dark fw-bold text-center mt-1 bg-warning rounded shadow-sm" data-bs-toggle="modal" @click="showClaimdata(item['svh_code'])" data-bs-target="#dataClaim">
                 <i class="bi bi-file-earmark-word-fill"></i>
                 แก้ไข
               </a>
@@ -118,7 +118,7 @@
                     <b>{{data_claim_modal.employee}} ;</b> รับแจ้งฯ
                   </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-6 ps-0">
                   <div class="p-3 rounded border h-100">
                       <h4 class="border-bottom pb-1">ข้อมูลเพิ่มเติม</h4>
                       <label>จังหวัด</label>
@@ -137,8 +137,16 @@
                       <label>เบอร์ติดต่อผู้เอาประกัน หรือผู้ขับขี่</label>
                       <input type="text" class="form-control mb-3" v-model="claim_for_update.customer_claim_mobile" placeholder="09xx">
                       <!-- license_plate -->
-                      <label>ทะเบียนรถ</label>
-                      <input type="text" class="form-control mb-3" v-model="claim_for_update.license_plate" placeholder="กกขขxx">
+                      <div class="row">
+                        <div class="col-lg-6">
+                          <label>ทะเบียนรถ</label>
+                          <input type="text" class="form-control mb-3" v-model="claim_for_update.license_plate" placeholder="กกขขxx" required>
+                        </div>
+                        <div class="col-lg-6">
+                          <label>จังหวัด</label>
+                          <input type="text" class="form-control mb-3" placeholder="(ไม่มีให้ใส่ -)" required>
+                        </div>
+                      </div>
                       <label>ยี่ห้อรถ</label>
                       <input type="text" class="form-control" v-model="claim_for_update.brand_car" placeholder="Honda cvic">
                       <!-- {{claim_for_update}} -->
@@ -180,13 +188,17 @@
 </template>
 
 <script setup lang="ts">
+  import { saveAs } from 'file-saver';
   import axios from "axios";
   import { onMounted, reactive, ref, computed } from "vue";
   import { useStore } from "vuex";
   import { apiUrl } from "@/services/constants";
   import jsPDF from 'jspdf';
   import { sarabun, sarabunbold } from '../fonts/fonts';
-  
+  import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+  import { response } from "express";
+  import { dwnClaim } from "@/pdf/claimpdf";
+
   const store = useStore();
   // data innitail
   const data_inintail = reactive({
@@ -288,7 +300,7 @@
       data_claim_modal.accident = response.data.body['accident'];
       data_claim_modal.employee = response.data.body['employee'];
       data_claim_modal.time = response.data.body['time'];
-      data_claim_modal.inspector = response.data.body['inspector'];
+      data_claim_modal.inspector = response.data.body['Inspector'];
       data_claim_modal.inspector_mobile = response.data.body['inspector_mobile'];
       data_claim_modal.svh_code = response.data.body['svh_code'];
       data_claim_modal.date_dry = response.data.body['date_dry'];
@@ -352,102 +364,10 @@
     date_dry: "",
     time_dry: ""
   });
-
-const downloadClaimFile = async (svhcode:string) => {
-  var pdf = new jsPDF();
-  let width = pdf.internal.pageSize.getWidth();
-  const fontbold = () => {
-    pdf.addFileToVFS("THSarabunBold.ttf", sarabunbold);
-    pdf.addFont('THSarabunBold.ttf', 'sarabunBold', 'normal');
-    pdf.setFont('sarabunBold');
+  const downloadClaimFile = (svhcode:string) => {
+    console.log("tan");
+    dwnClaim(svhcode);
   };
-  const fontnormal = () => {
-    pdf.addFileToVFS("THSarabun.ttf", sarabun);
-    pdf.addFont('THSarabun.ttf', 'sarabun', 'normal');
-    pdf.setFont('sarabun');
-  }
-  // readata
-  await axios(apiUrl + '/claim/readdata/' + svhcode).then(response => {
-    const month_th = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
-    console.log(response.data);
-    const dateArray = response.data.body.date.split("-");
-    let svh_code = `เลขเคลม : ${response.data.body['svh_code']}`
-    let date = `วันที่ ${parseInt(dateArray[2])} ${month_th[parseInt(dateArray[1]) - 1]} ${dateArray[0]} เวลารับแจ้ง : ${response.data.body.time}`;
-    /* let time = `เวลารับแจ้ง : ${response.data.body['time']}`;
-    let location = `${response.data.body['location']}`; */
-    /* console.log(response.data); */
-    // head code
-    let padding = 25
-    fontbold();
-    pdf.setFontSize(padding);
-    pdf.text(svh_code, width/2, padding, {align:'center'});
-    // content
-    fontnormal();
-    // date
-    pdf.setFontSize(16);
-    pdf.text(date, 210-padding, 42, {align:'right'});
-    // employee
-    fontbold();
-    pdf.text('พนักงานรับแจ้ง : ', padding, 42);
-    fontnormal();
-    pdf.text(response.data.body['employee'], 53, 42);
-    // inspector
-    fontbold();
-    pdf.text('เจ้าหน้าที่ตรวจสอบอุบัติเหตุ : ', padding, 50);
-    fontnormal();
-    pdf.text(response.data.body['Inspector'] + ' ' +  response.data.body['inspector_mobile'], 72, 50);
-    // claim
-    // company
-    fontbold();
-    pdf.text('บริษัทประกันภัย : ', padding, 58);
-    fontnormal();
-    pdf.text(response.data.body['company'], 54, 58);
-    // type
-    fontbold();
-    pdf.text('ประเภท : ', padding, 66);
-    fontnormal();
-    pdf.text(response.data.body['type'] + ' ' + response.data.body['date_dry'] + ' ' + response.data.body['time_dry'], 41, 66);
-    // location
-    fontbold();
-    pdf.text('สถานที่เกิดเหตุ : ', padding, 74);
-    fontnormal();
-    pdf.text(response.data.body['location'], 53, 74);
-    // provicne distric
-    fontbold();
-    pdf.text('อำเภอ : ', padding, 82);
-    fontnormal();
-    pdf.text(response.data.district['name'], 39, 82);
-    fontbold();
-    pdf.text('จังหวัด : ', 70, 82);
-    fontnormal();
-    pdf.text(response.data.body['name'], 86, 82);
-    // source employee
-    fontbold();
-    pdf.text('จ่ายงานโดย : ', padding, 90);
-    fontnormal();
-    pdf.text(response.data.body['source_employee'], 50, 90);
-    // cust
-    fontbold();
-    pdf.text('ชื่อผู้เอาประกัน : ', padding, 98);
-    fontnormal();
-    pdf.text(response.data.body['customer_claim_name'], 52, 98);
-    fontbold();
-    pdf.text('เบอร์ติดผู้เอาประกัน หรือผู้ขับขี่ : ', padding, 106);
-    fontnormal();
-    pdf.text(response.data.body['customer_claim_mobile'], 77, 106);
-    fontbold();
-    pdf.text('ทะเบียนรถ : ', padding, 114);
-    fontnormal();
-    pdf.text(response.data.body['license_plate'], 46, 114);
-    fontbold();
-    pdf.text('ยี่ห้อรถ : ', padding, 122);
-    fontnormal();
-    pdf.text(response.data.body['brand_car'], 41, 122);
-    
-    // export
-    pdf.save('hello.pdf');
-  });
-};
 
 </script>
 

@@ -293,7 +293,8 @@ const resetClaimForm = () => {
   claim_for_send.inspector_mobile = "",
   claim_for_send.source_employee = "",
   claim_for_send.date_dry = "",
-  claim_for_send.time_dry = ""
+  claim_for_send.time_dry = "",
+  claim_for_send.time = ""
 };
 
 // get mobile inspector
@@ -327,7 +328,7 @@ const showDryForm = async () => {
 // create data
 const createClaim = async () => {
   if(claim_for_send.company == "" || claim_for_send.date == "" || claim_for_send.type == "" || claim_for_send.location == "" ||
-    claim_for_send.employee == "" || claim_for_send.inspector == "" || claim_for_send.inspector_mobile == ""  ){
+    claim_for_send.employee == "" || claim_for_send.inspector == "" || claim_for_send.inspector_mobile == "" || claim_for_send.time == ""  ){
       /* display.value = 'none'; */
     return alert("กรุณากรอกข้อมูลให้ครบท้วน");
   }
@@ -380,7 +381,7 @@ const data_claim_modal = reactive({data_res:{
 const bs = ref("");
 const btnSubmitState = () => {
   if(claim_for_send.company == "" || claim_for_send.date == "" || claim_for_send.type == "" || claim_for_send.location == "" ||
-    claim_for_send.employee == "" || claim_for_send.inspector == "" || claim_for_send.inspector_mobile == "" ){
+    claim_for_send.employee == "" || claim_for_send.inspector == "" || claim_for_send.inspector_mobile == ""  ){
     bs.value = "bs"
     /* return alert("กรุณากรอกข้อมูลให้ครบท้วน"); */
   }else{
@@ -435,7 +436,7 @@ const downloadClaimFile = async (svhcode:string) => {
   // readata
   await axios(apiUrl + '/claim/readdata/' + svhcode).then(response => {
     const month_th = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
-    console.log(response.data);
+    /* console.log(response.data); */
     const dateArray = response.data.body.date.split("-");
     let svh_code = `เลขเคลม : ${response.data.body['svh_code']}`
     let date = `วันที่ ${parseInt(dateArray[2])} ${month_th[parseInt(dateArray[1]) - 1]} ${dateArray[0]} เวลารับแจ้ง : ${response.data.body.time}`;
@@ -456,6 +457,7 @@ const downloadClaimFile = async (svhcode:string) => {
     fontbold();
     pdf.text('พนักงานรับแจ้ง : ', padding, 42);
     fontnormal();
+    /* pdf.setTextColor('#E65774'); */
     pdf.text(response.data.body['employee'], 53, 42);
     // inspector
     fontbold();
@@ -511,7 +513,7 @@ const downloadClaimFile = async (svhcode:string) => {
     pdf.text(response.data.body['brand_car'], 41, 122);
     
     // export
-    pdf.save('hello.pdf');
+    pdf.save(svh_code + '.pdf');
   });
 };
 
